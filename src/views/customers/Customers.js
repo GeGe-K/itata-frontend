@@ -78,6 +78,7 @@ class Customers extends React.Component {
             this.setState({
                 editCustomerModal : !this.state.editCustomerModal,
                 editCustomerData : {
+                    id: '',
                     name: '',
                     phone: '',
                     address: ''

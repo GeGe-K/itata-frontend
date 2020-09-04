@@ -16,15 +16,14 @@
 
 */
 import Dashboard from "views/Dashboard.js";
-import Customers from "./views/customers/Customers";
-import Orders from "./views/orders/Orders"
+import Customers from "./views/Customers/Customers";
+import Orders from "./views/Orders/Orders"
 import Icons from "views/Icons.js";
-import Map from "views/Map.js";
 import Notifications from "views/Notifications.js";
 import TableList from "views/TableList.js";
-// import Typography from "views/Typography.js";
 import UserProfile from "views/UserProfile.js";
 import WaterTypes from "./views/WaterTypes/WaterTypes";
+import Products from "./views/Products/Products";
 
 let routes = [
   {
@@ -35,14 +34,21 @@ let routes = [
     layout: "/admin"
   },
   {
-    path: "/customers",
+    path: "/Customers",
     name: "Customers",
     icon: "tim-icons icon-align-center",
     component: Customers,
     layout: "/admin"
   },
   {
-    path: "/orders",
+    path: "/Products",
+    name: "Products",
+    icon: "tim-icons icon-coins",
+    component: Products,
+    layout: "/admin"
+  },
+  {
+    path: "/Orders",
     name: "Orders",
     icon: "tim-icons icon-cart",
     component: Orders,
@@ -60,13 +66,6 @@ let routes = [
     name: "Icons",
     icon: "tim-icons icon-atom",
     component: Icons,
-    layout: "/admin"
-  },
-  {
-    path: "/map",
-    name: "Map",
-    icon: "tim-icons icon-pin",
-    component: Map,
     layout: "/admin"
   },
   {
@@ -90,13 +89,7 @@ let routes = [
     component: TableList,
     layout: "/admin"
   },
-  // {
-  //   path: "/typography",
-  //   name: "Typography",
-  //   icon: "tim-icons icon-align-center",
-  //   component: Typography,
-  //   layout: "/admin"
-  // }
+
 
 ];
 export default routes;

@@ -19,6 +19,11 @@ class WaterTypes extends React.Component {
             addWaterTypeModal : false,
             newWaterTypeData : {
                 name: ''
+            },
+            editWaterTypeModal : false,
+            editWaterTypeData : {
+                id: '',
+                name: ''
             }
         }
     }
@@ -35,7 +40,47 @@ class WaterTypes extends React.Component {
         })
     }
     addWaterType() {
-
+        axios.post('http://itata.test/api/watertypes',this.state.newWaterTypeData).then((response) => {
+            let { waterTypes } = this.state
+            waterTypes.push(response.data)
+            this.setState({
+                waterTypes,
+                addWaterTypeModal : !this.state.addWaterTypeModal,
+                newWaterTypeData : {
+                    name: ''
+                }
+            })
+        })
+    }
+    toogleEditWaterTypeModal() {
+        this.setState({
+            editWaterTypeModal : !this.state.editWaterTypeModal
+        })
+    }
+    editWaterType(id, name) {
+        this.setState({
+            editWaterTypeData : {id , name},
+            editWaterTypeModal : !this.state.editWaterTypeModal
+        })
+    }
+    updateWaterType() {
+        let { name } = this.state.editWaterTypeData
+        axios.put('http://itata.test/api/watertypes/'+this.state.editWaterTypeData.id, {
+            name
+        }).then((response) => {
+            this._refreshWaterTypes()
+            this.setState({
+                editWaterTypeModal : !this.state.editWaterTypeModal,
+                editWaterTypeData : {
+                    name: ''
+                }
+            })
+        })
+    }
+    deleteWaterType(id) {
+        axios.delete('http://itata.test/api/watertypes/'+id).then((response) => {
+            this._refreshWaterTypes()
+        })
     }
 
     componentDidMount() {
@@ -44,14 +89,14 @@ class WaterTypes extends React.Component {
 
     render() {
         let count = 1
-        let { waterTypes } = this.state.waterTypes.map((watertype, index) => {
+        let waterTypes = this.state.waterTypes.map((watertype, index) => {
             return (
                 <tr key={`watertype-list-key ${index}`}>
                     <td>{count++}</td>
                     <td>{watertype.name}</td>
                     <td>
-                        <Button color="primary" size="sm" className="mr-2">Edit</Button>
-                        <Button color="danger" size="sm">Delete</Button>
+                        <Button color="success" size="sm" className="mr-2" onClick={this.editWaterType.bind(this, watertype.id, watertype.name)}>Edit</Button>
+                        <Button color="danger" size="sm" onClick={this.deleteWaterType.bind(this, watertype.id)}>Delete</Button>
                     </td>
                 </tr>
             )
@@ -68,7 +113,7 @@ class WaterTypes extends React.Component {
                                 <CardBody>
                                     <Button color="primary" onClick={this.toogleNewWaterTypeModal.bind(this)}>Add Water-Type</Button>
                                     <Modal isOpen={this.state.addWaterTypeModal} toggle={this.toogleNewWaterTypeModal.bind(this)}>
-                                        <ModalHeader toggle={this.toogleNewWaterTypeModal.bind(this)}>Add a new Customer</ModalHeader>
+                                        <ModalHeader toggle={this.toogleNewWaterTypeModal.bind(this)}>Add a new water-type</ModalHeader>
                                         <ModalBody>
                                             <FormGroup>
                                                 <Label for="name">Name</Label>
@@ -88,6 +133,29 @@ class WaterTypes extends React.Component {
                                             <Button color="secondary" onClick={this.toogleNewWaterTypeModal.bind(this)}>Cancel</Button>
                                         </ModalFooter>
                                     </Modal>
+
+                                    <Modal isOpen={this.state.editWaterTypeModal} toggle={this.toogleEditWaterTypeModal.bind(this)}>
+                                        <ModalHeader toggle={this.toogleEditWaterTypeModal.bind(this)}>Edit water-type</ModalHeader>
+                                        <ModalBody>
+                                            <FormGroup>
+                                                <Label for="name">Name</Label>
+                                                <Input style={{color: 'black'}} type="text" name="name" id="name"
+                                                       placeholder="Enter water-type name"
+                                                       value={this.state.editWaterTypeData.name}
+                                                       onChange={(e) => {
+                                                           let { editWaterTypeData } = this.state
+                                                           editWaterTypeData.name = e.target.value
+                                                           this.setState({ editWaterTypeData })
+                                                       }} />
+                                            </FormGroup>
+
+                                        </ModalBody>
+                                        <ModalFooter>
+                                            <Button color="primary" onClick={this.updateWaterType.bind(this)}>Update</Button>{' '}
+                                            <Button color="secondary" onClick={this.toogleEditWaterTypeModal.bind(this)}>Cancel</Button>
+                                        </ModalFooter>
+                                    </Modal>
+
                                     <Table className="tablesorter" responsive>
                                         <thead className="text-primary">
                                         <tr>
