@@ -16,13 +16,15 @@
 
 */
 import Dashboard from "views/Dashboard.js";
-import Customers from "./views/Customers";
+import Customers from "./views/customers/Customers";
+import Orders from "./views/orders/Orders"
 import Icons from "views/Icons.js";
 import Map from "views/Map.js";
 import Notifications from "views/Notifications.js";
 import TableList from "views/TableList.js";
-import Typography from "views/Typography.js";
+// import Typography from "views/Typography.js";
 import UserProfile from "views/UserProfile.js";
+import WaterTypes from "./views/WaterTypes/WaterTypes";
 
 let routes = [
   {
@@ -35,8 +37,22 @@ let routes = [
   {
     path: "/customers",
     name: "Customers",
-    icon: "tim-icons icon-cart",
+    icon: "tim-icons icon-align-center",
     component: Customers,
+    layout: "/admin"
+  },
+  {
+    path: "/orders",
+    name: "Orders",
+    icon: "tim-icons icon-cart",
+    component: Orders,
+    layout: "/admin"
+  },
+  {
+    path: "/watertypes",
+    name: "Water-Type",
+    icon: "tim-icons icon-compass-05",
+    component: WaterTypes,
     layout: "/admin"
   },
   {
@@ -74,13 +90,13 @@ let routes = [
     component: TableList,
     layout: "/admin"
   },
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: "tim-icons icon-align-center",
-    component: Typography,
-    layout: "/admin"
-  }
+  // {
+  //   path: "/typography",
+  //   name: "Typography",
+  //   icon: "tim-icons icon-align-center",
+  //   component: Typography,
+  //   layout: "/admin"
+  // }
 
 ];
 export default routes;
