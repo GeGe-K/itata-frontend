@@ -1,13 +1,57 @@
 import React from 'react'
 import axios from 'axios'
-import {Row, Col, Table, CardHeader, CardTitle, CardBody, Card, Button} from 'reactstrap'
+import {
+    Row,
+    Col,
+    Table,
+    CardHeader,
+    CardTitle,
+    CardBody,
+    Card,
+    Button,
+    Modal,
+    ModalFooter,
+    ModalBody,
+    ModalHeader,
+    FormGroup,
+    Label,
+    Input
+} from 'reactstrap'
 
 class Customers extends React.Component {
     constructor(props) {
         super(props);
+        this.toogleNewCustomerModal = this.toogleNewCustomerModal.bind(this)
+        this.addCustomer = this.addCustomer.bind(this)
         this.state = {
-            customers : []
+            customers : [],
+            addCustomerModal : false,
+            newCustomerData : {
+              name : '',
+              phone : '',
+              address : ''
+            },
         }
+    }
+    toogleNewCustomerModal() {
+        this.setState({
+            addCustomerModal : !this.state.addCustomerModal
+        })
+    }
+    addCustomer() {
+        axios.post('http://itata.test/api/customers',this.state.newCustomerData).then((response) => {
+            let { customers } = this.state
+            customers.push(response.data)
+            this.setState({
+                customers,
+                newCustomerModal : false,
+                newCustomerData : {
+                    name: '',
+                    phone: '',
+                    address: ''
+                }
+            })
+        })
     }
 
     componentDidMount() {
@@ -41,6 +85,46 @@ class Customers extends React.Component {
                             <CardTitle tag="h4">Customer List Table</CardTitle>
                         </CardHeader>
                         <CardBody>
+                            <Button color="primary" onClick={this.toogleNewCustomerModal}>Add Customer</Button>
+                            <Modal isOpen={this.state.addCustomerModal} toggle={this.toogleNewCustomerModal}>
+                                <ModalHeader toggle={this.toogleNewCustomerModal}>Add a new Customer</ModalHeader>
+                                <ModalBody>
+                                        <FormGroup>
+                                            <Label for="name">Name</Label>
+                                            <Input style={{color: 'black'}} type="text" name="name" id="name" value={this.state.newCustomerData.name}
+                                                   placeholder="name of the customer"
+                                                   onChange={(e) => {
+                                                       let { newCustomerData } = this.state;
+                                                       newCustomerData.name = e.target.value
+                                                       this.setState({ newCustomerData })
+                                                   }} />
+                                        </FormGroup>
+                                    <FormGroup>
+                                        <Label for="phone">Phone</Label>
+                                        <Input style={{color: 'black'}} type="text" name="phone" id="phone" value={this.state.newCustomerData.phone}
+                                               placeholder="contact of the customer"
+                                               onChange={(e) => {
+                                                   let { newCustomerData } = this.state
+                                                   newCustomerData.phone = e.target.value
+                                                   this.setState({ newCustomerData })
+                                        }}/>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="address">Address</Label>
+                                        <Input style={{color: 'black'}} type="text" name="address" id="address" value={this.state.newCustomerData.address}
+                                               placeholder="address of the customer"
+                                               onChange={(e) => {
+                                                   let { newCustomerData } = this.state
+                                                   newCustomerData.address = e.target.value
+                                                   this.setState({ newCustomerData })
+                                        }}/>
+                                    </FormGroup>
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button color="primary" onClick={this.addCustomer}>Save</Button>{' '}
+                                    <Button color="secondary" onClick={this.toogleNewCustomerModal}>Cancel</Button>
+                                </ModalFooter>
+                            </Modal>
                             <Table className="tablesorter" responsive>
                                 <thead className="text-primary">
                                 <tr>
