@@ -155,7 +155,7 @@ class Orders extends React.Component {
                                         <ModalHeader toggle={this.toogleNewOrderModal.bind(this)}>Add a new Order</ModalHeader>
                                         <ModalBody>
                                             <FormGroup>
-                                                <Label for="Date Ordered">Date</Label>
+                                                <Label for="Date Ordered">Date Ordered</Label>
                                                 <Input
                                                     style = {{color: 'black'}}
                                                     type="date"
@@ -217,7 +217,7 @@ class Orders extends React.Component {
                                         <ModalHeader toggle={this.toogleEditOrderModal.bind(this)}>Edit an order</ModalHeader>
                                         <ModalBody>
                                             <FormGroup>
-                                                <Label for="Date Ordered">Date</Label>
+                                                <Label for="Date Ordered">Date Ordered</Label>
                                                 <Input
                                                     style = {{color: 'black'}}
                                                     type="date"
