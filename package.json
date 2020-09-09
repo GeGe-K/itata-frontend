@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://demos.creative-tim.com/black-dashboard-react/#/admin/dashboard",
   "dependencies": {
+    "@emotion/core": "^10.0.35",
     "@types/react": "16.9.23",
     "axios": "^0.20.0",
     "chart.js": "2.9.3",
@@ -19,6 +20,7 @@
     "react-notification-alert": "0.0.12",
     "react-router-dom": "5.1.2",
     "react-scripts": "3.4.0",
+    "react-spinners": "^0.9.0",
     "reactstrap": "8.4.1"
   },
   "scripts": {

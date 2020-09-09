@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import axiosInstance from "../../helpers/axios";
 import {
     Card,
     CardBody,
@@ -28,7 +28,7 @@ class WaterTypes extends React.Component {
         }
     }
     _refreshWaterTypes() {
-        axios.get('http://itata.test/api/watertypes').then((response) => {
+        axiosInstance.get('/watertypes').then((response) => {
             this.setState({
                 waterTypes : response.data
             })
@@ -40,7 +40,7 @@ class WaterTypes extends React.Component {
         })
     }
     addWaterType() {
-        axios.post('http://itata.test/api/watertypes',this.state.newWaterTypeData).then((response) => {
+        axiosInstance.post('/watertypes',this.state.newWaterTypeData).then((response) => {
             let { waterTypes } = this.state
             waterTypes.push(response.data)
             this.setState({
@@ -65,7 +65,7 @@ class WaterTypes extends React.Component {
     }
     updateWaterType() {
         let { name } = this.state.editWaterTypeData
-        axios.put('http://itata.test/api/watertypes/'+this.state.editWaterTypeData.id, {
+        axiosInstance.put('/watertypes/'+this.state.editWaterTypeData.id, {
             name
         }).then((response) => {
             this._refreshWaterTypes()
@@ -78,7 +78,7 @@ class WaterTypes extends React.Component {
         })
     }
     deleteWaterType(id) {
-        axios.delete('http://itata.test/api/watertypes/'+id).then((response) => {
+        axiosInstance.delete('/watertypes/'+id).then((response) => {
             this._refreshWaterTypes()
         })
     }

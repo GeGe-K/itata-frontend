@@ -1,5 +1,8 @@
 import React from 'react'
-import axios from 'axios'
+import axiosInstance from "../../helpers/axios";
+import Spin from "../../services/Spin";
+import isLoggedIn from "../../helpers/isLoggedIn";
+import { Redirect } from 'react-router-dom'
 
 
 import {
@@ -41,7 +44,8 @@ class Customers extends React.Component {
                 name : '',
                 phone : '',
                 address : ''
-            }
+            },
+            loading : true
         }
     }
     toogleNewCustomerModal() {
@@ -55,7 +59,7 @@ class Customers extends React.Component {
         })
     }
     addCustomer() {
-        axios.post('http://itata.test/api/customers',this.state.newCustomerData).then((response) => {
+        axiosInstance.post('/customers',this.state.newCustomerData).then((response) => {
             let { customers } = this.state
             customers.push(response.data)
             this.setState({
@@ -71,7 +75,7 @@ class Customers extends React.Component {
     }
     updateCustomer() {
         let { name, phone, address } = this.state.editCustomerData
-        axios.put('http://itata.test/api/customers/' + this.state.editCustomerData.id, {
+        axiosInstance.put('/customers/' + this.state.editCustomerData.id, {
             name, phone, address
         }).then((response) => {
             this._refreshCustomers()
@@ -87,9 +91,10 @@ class Customers extends React.Component {
         })
     }
     _refreshCustomers() {
-        axios.get('http://itata.test/api/customers').then((response) => {
+        axiosInstance.get('/customers').then((response) => {
             this.setState({
-                customers : response.data
+                customers : response.data,
+                loading : false
             })
         });
     }
@@ -100,7 +105,7 @@ class Customers extends React.Component {
         })
     }
     deleteCustomer(id) {
-        axios.delete('http://itata.test/api/customers/' + id).then((response) => {
+        axiosInstance.delete('/customers/' + id).then((response) => {
             this._refreshCustomers()
         })
     }
@@ -111,6 +116,10 @@ class Customers extends React.Component {
     }
 
     render() {
+        if(!isLoggedIn()) {
+            return <Redirect to="/login" />
+        }
+        let { loading } = this.state
         let count = 1
         let customers = this.state.customers.map((customer, index) => {
             return (
@@ -227,7 +236,8 @@ class Customers extends React.Component {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {customers}
+                                {/*{customers}*/}
+                                {loading ? <Spin loading = {loading}/> : customers}
                                 </tbody>
                             </Table>
                         </CardBody>

@@ -4180,6 +4180,11 @@ button.close {
     height: calc(100vh - (0.5rem * 2));
     content: ""; }
 
+  .custom-modal-style {
+    width: 897px;
+    height: 802px;
+  }
+
 .modal-content {
   position: relative;
   display: flex;

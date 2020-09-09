@@ -1,5 +1,6 @@
 import React from 'react'
-import axios from 'axios'
+import axiosInstance from "../../helpers/axios";
+import ShowProduct from "./showProduct";
 
 import {
     Card,
@@ -9,13 +10,24 @@ import {
     Col,
     Row,
     Table,
-    Button, Modal, ModalHeader, ModalBody, FormGroup, Label, Input, ModalFooter,
+    Button,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    FormGroup,
+    Label,
+    Input,
+    ModalFooter,
+    Pagination,
+    PaginationItem,
+    PaginationLink
 } from "reactstrap";
 
 class Products extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            product : [],
             products : [],
             watertypes : [],
             addProductModal : false,
@@ -30,7 +42,8 @@ class Products extends React.Component {
                 date : '',
                 watertype_id : '',
                 quantity : ''
-            }
+            },
+            showProductModal : false
         }
     }
     toogleNewProductModal() {
@@ -40,7 +53,7 @@ class Products extends React.Component {
     }
     addProduct() {
         let { date, watertype_id, quantity} = this.state.addProductData
-        axios.post('http://itata.test/api/products', {
+        axiosInstance.post('/products', {
             date, watertype_id, quantity
         }).then((response) => {
             let { products } = this.state
@@ -69,7 +82,7 @@ class Products extends React.Component {
     }
     updateProduct() {
         let { date, watertype_id, quantity } = this.state.editProductData
-        axios.put('http://itata.test/api/products/' + this.state.editProductData.id , {
+        axiosInstance.put('/products/' + this.state.editProductData.id , {
             date, watertype_id, quantity
         }).then((response) => {
             this._refreshProducts()
@@ -85,19 +98,37 @@ class Products extends React.Component {
         })
     }
     deleteProduct(id) {
-        axios.delete('http://itata.test/api/products/' + id).then((response) => {
+        axiosInstance.delete('/products/' + id).then((response) => {
             this._refreshProducts()
         })
     }
+    toogleShowProductModal() {
+        this.setState({
+            showProductModal : !this.state.showProductModal
+        })
+    }
+    showProduct(id) {
+        this.product(id);
+        this.setState({
+            showProductModal : !this.state.showProductModal
+        })
+    }
+    product(id) {
+        axiosInstance.get('/products/'+ id).then((response) => {
+            this.setState({
+                product : response.data
+            })
+        })
+    }
     watertypes() {
-        axios.get('http://itata.test/api/watertypes').then((response) => {
+        axiosInstance.get('/watertypes').then((response) => {
             this.setState({
                 watertypes : response.data
             })
         })
     }
     _refreshProducts() {
-        axios.get('http://itata.test/api/products').then((response) => {
+        axiosInstance.get('/products').then((response) => {
             this.setState({
                 products : response.data
             })
@@ -116,11 +147,11 @@ class Products extends React.Component {
                     <td>{count++}</td>
                     <td>{product.date}</td>
                     <td>{product.watertype_id}</td>
-                    <td>{product.quantity}</td>
+                    <td>{product.bottle_quantity}</td>
                     <td>
                         <Button color="success" size="sm" className="mr-2" onClick={this.editProduct.bind(this, product.id, product.date, product.watertype_id, product.quantity)}>Edit</Button>
                         <Button color="danger" size="sm" className="mr-2" onClick={this.deleteProduct.bind(this, product.id)}>Delete</Button>
-                        <Button color="secondary" size="sm">Show</Button>
+                        <Button color="secondary" size="sm" onClick={this.showProduct.bind(this, product.id)}>Show</Button>
                     </td>
                 </tr>
             )
@@ -234,6 +265,17 @@ class Products extends React.Component {
                                         </ModalFooter>
                                     </Modal>
 
+                                    <Modal isOpen={this.state.showProductModal} toggle={this.toogleShowProductModal.bind(this)} contentClassName=".custom-modal-style">
+                                        <ModalHeader toggle={this.toogleShowProductModal.bind(this)}>Display Product</ModalHeader>
+                                        <ModalBody>
+                                        <ShowProduct />
+                                        </ModalBody>
+                                        <ModalFooter>
+                                            <Button color="primary" onClick={this.updateProduct.bind(this)}>Update</Button>{' '}
+                                            <Button color="secondary" onClick={this.toogleShowProductModal.bind(this)}>Cancel</Button>
+                                        </ModalFooter>
+                                    </Modal>
+
                                     <Table className="tablesorter" responsive>
                                         <thead className="text-primary">
                                         <tr>
@@ -250,6 +292,45 @@ class Products extends React.Component {
                                     </Table>
                                 </CardBody>
                             </Card>
+                            <Pagination aria-label="Page navigation example">
+                                <PaginationItem disabled>
+                                    <PaginationLink first href="#" />
+                                </PaginationItem>
+                                <PaginationItem disabled>
+                                    <PaginationLink previous href="#" />
+                                </PaginationItem>
+                                <PaginationItem active>
+                                    <PaginationLink href="#">
+                                        1
+                                    </PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink href="#">
+                                        2
+                                    </PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink href="#">
+                                        3
+                                    </PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink href="#">
+                                        4
+                                    </PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink href="#">
+                                        5
+                                    </PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink next href="#" />
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink last href="#" />
+                                </PaginationItem>
+                            </Pagination>
                         </Col>
                     </Row>
                 </div>

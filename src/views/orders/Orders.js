@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import axiosInstance from "../../helpers/axios";
 
 import {
     Card,
@@ -37,7 +37,7 @@ class Orders extends React.Component {
         }
     }
     _refreshOrders() {
-        axios.get('http://itata.test/api/orders').then((response) => {
+        axiosInstance.get('/orders').then((response) => {
             this.setState({
                 orders : response.data
             })
@@ -50,7 +50,7 @@ class Orders extends React.Component {
     }
     addOrder() {
         let { date_ordered, customer_id, watertype_id, quantity } = this.state.newOrderData
-        axios.post('http://itata.test/api/orders', {
+        axiosInstance.post('/orders', {
             date_ordered, customer_id, watertype_id, quantity
         }).then((response) => {
             let { orders } = this.state
@@ -73,7 +73,7 @@ class Orders extends React.Component {
     }
     updateOrder() {
         let { date_ordered, customer_id, watertype_id, quantity } = this.state.editOrderData
-        axios.put('http://itata.test/api/orders/'+ this.state.editOrderData.id, {
+        axiosInstance.put('/orders/'+ this.state.editOrderData.id, {
             date_ordered, customer_id, watertype_id, quantity
         }).then((response) => {
             this._refreshOrders()
@@ -95,19 +95,19 @@ class Orders extends React.Component {
         })
     }
     deleteOrder(id) {
-        axios.delete('http://itata.test/api/orders'+ id).then(() => {
+        axiosInstance.delete('/orders'+ id).then(() => {
             this._refreshOrders()
         })
     }
     customers() {
-        axios.get('http://itata.test/api/customers').then((response) => {
+        axiosInstance.get('/customers').then((response) => {
             this.setState({
                 customers : response.data
             })
         })
     }
     watertypes() {
-        axios.get('http://itata.test/api/watertypes').then((res) => {
+        axiosInstance.get('/watertypes').then((res) => {
             this.setState({
                 watertypes : res.data
             })

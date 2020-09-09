@@ -19,8 +19,8 @@
 // // // Chart variables
 // #############################
 
-// chartExample1 and chartExample2 options
-let chart1_2_options = {
+// Performance and Products options
+let performance_products_options = {
   maintainAspectRatio: false,
   legend: {
     display: false
@@ -73,7 +73,7 @@ let chart1_2_options = {
 // #########################################
 // // // used inside src/views/Dashboard.js
 // #########################################
-let chartExample1 = {
+let Performance = {
   data1: canvas => {
     let ctx = canvas.getContext("2d");
 
@@ -209,13 +209,13 @@ let chartExample1 = {
       ]
     };
   },
-  options: chart1_2_options
+  options: performance_products_options
 };
 
 // #########################################
 // // // used inside src/views/Dashboard.js
 // #########################################
-let chartExample2 = {
+let Products = {
   data: canvas => {
     let ctx = canvas.getContext("2d");
 
@@ -243,18 +243,18 @@ let chartExample2 = {
           pointHoverRadius: 4,
           pointHoverBorderWidth: 15,
           pointRadius: 4,
-          data: [80, 100, 70, 80, 120, 80]
+          data: [2500, 100, 70, 80, 120, 80]
         }
       ]
     };
   },
-  options: chart1_2_options
+  options: performance_products_options
 };
 
 // #########################################
 // // // used inside src/views/Dashboard.js
 // #########################################
-let chartExample3 = {
+let Orders = {
   data: canvas => {
     let ctx = canvas.getContext("2d");
 
@@ -420,8 +420,8 @@ const chartExample4 = {
 };
 
 module.exports = {
-  chartExample1, // in src/views/Dashboard.js
-  chartExample2, // in src/views/Dashboard.js
-  chartExample3, // in src/views/Dashboard.js
+  Performance, // in src/views/Dashboard.js
+  Products, // in src/views/Dashboard.js
+  Orders, // in src/views/Dashboard.js
   chartExample4 // in src/views/Dashboard.js
 };

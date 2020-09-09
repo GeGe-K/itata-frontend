@@ -85,6 +85,13 @@ class AdminNavbar extends React.Component {
       modalSearch: !this.state.modalSearch
     });
   };
+
+  handleLogout() {
+    const { history } = this.props
+    localStorage.removeItem('token')
+    history.push('/login')
+  }
+
   render() {
     return (
       <>
@@ -203,7 +210,7 @@ class AdminNavbar extends React.Component {
                     </NavLink>
                     <DropdownItem divider tag="li" />
                     <NavLink tag="li">
-                      <DropdownItem className="nav-item">Log out</DropdownItem>
+                      <DropdownItem className="nav-item" onClick={this.handleLogout.bind(this)}>Log out</DropdownItem>
                     </NavLink>
                   </DropdownMenu>
                 </UncontrolledDropdown>

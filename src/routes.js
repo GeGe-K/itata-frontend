@@ -18,10 +18,6 @@
 import Dashboard from "views/Dashboard.js";
 import Customers from "./views/Customers/Customers";
 import Orders from "./views/Orders/Orders"
-import Icons from "views/Icons.js";
-import Notifications from "views/Notifications.js";
-import TableList from "views/TableList.js";
-import UserProfile from "views/UserProfile.js";
 import WaterTypes from "./views/WaterTypes/WaterTypes";
 import Products from "./views/Products/Products";
 
