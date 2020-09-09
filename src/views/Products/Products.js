@@ -1,6 +1,7 @@
 import React from 'react'
 import axiosInstance from "../../helpers/axios";
-import ShowProduct from "./showProduct";
+import { Redirect } from 'react-router-dom'
+import Spin from "../../services/Spin";
 
 import {
     Card,
@@ -22,6 +23,7 @@ import {
     PaginationItem,
     PaginationLink
 } from "reactstrap";
+import isLoggedIn from "../../helpers/isLoggedIn";
 
 class Products extends React.Component {
     constructor(props) {
@@ -43,7 +45,8 @@ class Products extends React.Component {
                 watertype_id : '',
                 quantity : ''
             },
-            showProductModal : false
+            showProductModal : false,
+            loading : true
         }
     }
     toogleNewProductModal() {
@@ -130,7 +133,8 @@ class Products extends React.Component {
     _refreshProducts() {
         axiosInstance.get('/products').then((response) => {
             this.setState({
-                products : response.data
+                products : response.data,
+                loading : false
             })
         })
     }
@@ -140,6 +144,10 @@ class Products extends React.Component {
     }
 
     render() {
+        if(!isLoggedIn()) {
+            return <Redirect to="/login" />
+        }
+        let { loading } = this.state
         let count = 1
         let products = this.state.products.map((product, index) => {
             return (
@@ -151,7 +159,6 @@ class Products extends React.Component {
                     <td>
                         <Button color="success" size="sm" className="mr-2" onClick={this.editProduct.bind(this, product.id, product.date, product.watertype_id, product.quantity)}>Edit</Button>
                         <Button color="danger" size="sm" className="mr-2" onClick={this.deleteProduct.bind(this, product.id)}>Delete</Button>
-                        <Button color="secondary" size="sm" onClick={this.showProduct.bind(this, product.id)}>Show</Button>
                     </td>
                 </tr>
             )
@@ -265,17 +272,6 @@ class Products extends React.Component {
                                         </ModalFooter>
                                     </Modal>
 
-                                    <Modal isOpen={this.state.showProductModal} toggle={this.toogleShowProductModal.bind(this)} contentClassName=".custom-modal-style">
-                                        <ModalHeader toggle={this.toogleShowProductModal.bind(this)}>Display Product</ModalHeader>
-                                        <ModalBody>
-                                        <ShowProduct />
-                                        </ModalBody>
-                                        <ModalFooter>
-                                            <Button color="primary" onClick={this.updateProduct.bind(this)}>Update</Button>{' '}
-                                            <Button color="secondary" onClick={this.toogleShowProductModal.bind(this)}>Cancel</Button>
-                                        </ModalFooter>
-                                    </Modal>
-
                                     <Table className="tablesorter" responsive>
                                         <thead className="text-primary">
                                         <tr>
@@ -287,50 +283,11 @@ class Products extends React.Component {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {products}
+                                        {loading ? <Spin loading={loading} /> : products}
                                         </tbody>
                                     </Table>
                                 </CardBody>
                             </Card>
-                            <Pagination aria-label="Page navigation example">
-                                <PaginationItem disabled>
-                                    <PaginationLink first href="#" />
-                                </PaginationItem>
-                                <PaginationItem disabled>
-                                    <PaginationLink previous href="#" />
-                                </PaginationItem>
-                                <PaginationItem active>
-                                    <PaginationLink href="#">
-                                        1
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">
-                                        2
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">
-                                        3
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">
-                                        4
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">
-                                        5
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink next href="#" />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink last href="#" />
-                                </PaginationItem>
-                            </Pagination>
                         </Col>
                     </Row>
                 </div>

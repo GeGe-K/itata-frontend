@@ -11,6 +11,9 @@ import {
     Table,
     Button, Modal, ModalHeader, ModalBody, FormGroup, Label, Input, ModalFooter
 } from "reactstrap";
+import isLoggedIn from "../../helpers/isLoggedIn";
+import {Redirect} from "react-router-dom";
+import Spin from "../../services/Spin";
 
 class Orders extends React.Component {
     constructor(props) {
@@ -33,7 +36,8 @@ class Orders extends React.Component {
                 customer_id : '',
                 watertype_id : '',
                 quantity : ''
-            }
+            },
+            loading : true
         }
     }
     _refreshOrders() {
@@ -109,7 +113,8 @@ class Orders extends React.Component {
     watertypes() {
         axiosInstance.get('/watertypes').then((res) => {
             this.setState({
-                watertypes : res.data
+                watertypes : res.data,
+                loading : false
             })
         })
     }
@@ -120,6 +125,10 @@ class Orders extends React.Component {
     }
 
     render() {
+        if(!isLoggedIn()) {
+            return <Redirect to="/login" />
+        }
+        let { loading } = this.state
         let count = 1
         const orders = this.state.orders.map((order, index) => {
             return (
@@ -287,7 +296,7 @@ class Orders extends React.Component {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {orders}
+                                        {loading ? <Spin loading= { loading }/> : orders}
                                         </tbody>
                                     </Table>
                                 </CardBody>

@@ -30,10 +30,18 @@ class LoginPage extends React.Component {
         axiosInstance.post('/login', { email, password }).then((response) => {
             this.setState({
                 token: response.data,
-                isLoading : false
+
             })
             localStorage.setItem('token', this.state.token)
-            history.push('/admin')
+            setTimeout(function(){
+                alert("welcome admin");
+                history.push('/admin')
+            }, 8000);
+        }).catch((error) => {
+            if(error.response)
+            {
+                history.push('/login')
+            }
         })
     }
 
@@ -66,10 +74,8 @@ class LoginPage extends React.Component {
                             </FormGroup>
                             <Button className="btn btn-primary btn-customized">Login</Button>
                         </Form>
-
                     </div>
                 </div>
-
             </div>
         )
     }

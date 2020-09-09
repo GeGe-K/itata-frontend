@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClockLoader } from "react-spinners";
+import { DotLoader } from "react-spinners";
 import { css } from '@emotion/core'
 
 const spinstyle = {
@@ -28,7 +28,7 @@ class Spin extends React.Component {
         return (
             <div>
                 <div style={spinstyle}>
-                    <ClockLoader color='#ba54f5' size={80} loading = { load } css={loaderCSS}/>
+                    <DotLoader color='#ba54f5' size={80} loading = { load } css={loaderCSS}/>
                 </div>
             </div>
         );

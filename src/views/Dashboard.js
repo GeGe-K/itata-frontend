@@ -21,6 +21,7 @@ import classNames from "classnames";
 // react plugin used to create charts
 import { Line, Bar } from "react-chartjs-2";
 import axiosInstance from "../helpers/axios";
+import { Redirect } from 'react-router-dom'
 
 // reactstrap components
 import {
@@ -43,6 +44,7 @@ import {
   Orders,
   chartExample4
 } from "variables/charts.js";
+import isLoggedIn from "../helpers/isLoggedIn";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -98,6 +100,10 @@ class Dashboard extends React.Component {
   }
 
   render() {
+
+    if(!isLoggedIn()) {
+      return <Redirect to="/login" />
+    }
 
     let performance_products_options = {
       maintainAspectRatio: false,

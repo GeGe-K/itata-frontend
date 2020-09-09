@@ -1,5 +1,7 @@
 import React from 'react'
 import axiosInstance from "../../helpers/axios";
+import { Redirect } from 'react-router-dom'
+
 import {
     Card,
     CardBody,
@@ -10,6 +12,8 @@ import {
     Table,
     Button, Modal, ModalHeader, ModalBody, FormGroup, Label, Input, ModalFooter
 } from "reactstrap";
+import isLoggedIn from "../../helpers/isLoggedIn";
+import Spin from "../../services/Spin";
 
 class WaterTypes extends React.Component {
     constructor(props) {
@@ -24,13 +28,15 @@ class WaterTypes extends React.Component {
             editWaterTypeData : {
                 id: '',
                 name: ''
-            }
+            },
+            loading: true
         }
     }
     _refreshWaterTypes() {
         axiosInstance.get('/watertypes').then((response) => {
             this.setState({
-                waterTypes : response.data
+                waterTypes : response.data,
+                loading : false
             })
         })
     }
@@ -88,6 +94,10 @@ class WaterTypes extends React.Component {
     }
 
     render() {
+        if(!isLoggedIn()) {
+            return <Redirect to="/login" />
+        }
+        let { loading } = this.state
         let count = 1
         let waterTypes = this.state.waterTypes.map((watertype, index) => {
             return (
@@ -165,7 +175,7 @@ class WaterTypes extends React.Component {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {waterTypes}
+                                        {loading ? <Spin loading={loading}/> : waterTypes}
                                         </tbody>
                                     </Table>
                                 </CardBody>

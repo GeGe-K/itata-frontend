@@ -96,7 +96,7 @@ class Customers extends React.Component {
                 customers : response.data,
                 loading : false
             })
-        });
+        })
     }
     editCustomer(id, name, phone, address) {
         this.setState({
