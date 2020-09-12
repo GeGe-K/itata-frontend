@@ -86,7 +86,13 @@ class AdminNavbar extends React.Component {
     });
   };
 
-  handleLogout() {
+  handleProfile(event) {
+    event.preventDefault()
+    const { history } = this.props
+    history.push('/admin/user-profile')
+  }
+  handleLogout(event) {
+    event.preventDefault()
     const { history } = this.props
     localStorage.removeItem('token')
     history.push('/login')
@@ -203,7 +209,7 @@ class AdminNavbar extends React.Component {
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-navbar" right tag="ul">
                     <NavLink tag="li">
-                      <DropdownItem className="nav-item">Profile</DropdownItem>
+                      <DropdownItem className="nav-item" onClick={this.handleProfile.bind(this)}>Profile</DropdownItem>
                     </NavLink>
                     <NavLink tag="li">
                       <DropdownItem className="nav-item">Settings</DropdownItem>
@@ -224,7 +230,7 @@ class AdminNavbar extends React.Component {
           isOpen={this.state.modalSearch}
           toggle={this.toggleModalSearch}
         >
-          <div className="modal-header">
+          <div className="modal-header">f
             <Input id="inlineFormInputGroup" placeholder="SEARCH" type="text" />
             <button
               aria-label="Close"

@@ -2,6 +2,8 @@ import React from 'react'
 import axiosInstance from "../../helpers/axios";
 import { Redirect } from 'react-router-dom'
 import Spin from "../../services/Spin";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'
 
 import {
     Card,
@@ -19,12 +21,11 @@ import {
     Label,
     Input,
     ModalFooter,
-    Pagination,
-    PaginationItem,
-    PaginationLink
 } from "reactstrap";
 import isLoggedIn from "../../helpers/isLoggedIn";
+import Pagination from "react-js-pagination";
 
+toast.configure()
 class Products extends React.Component {
     constructor(props) {
         super(props);
@@ -46,8 +47,25 @@ class Products extends React.Component {
                 quantity : ''
             },
             showProductModal : false,
-            loading : true
+            loading : true,
+            toastNotice : '',
+            current_page : '',
+            total : '',
+            per_page : '',
+
         }
+    }
+    notifySuccess() {
+        toast.success(this.state.toastNotice)
+    }
+    notifyInfo() {
+        toast.info(this.state.toastNotice)
+    }
+    notifyWarn() {
+        toast.warn(this.state.toastNotice)
+    }
+    notifyError() {
+        toast.error(this.state.toastNotice)
     }
     toogleNewProductModal() {
         this.setState({
@@ -64,12 +82,19 @@ class Products extends React.Component {
             this.setState({
                 products,
                 addProductModal : !this.state.addProductModal,
+                toastNotice : 'Successfully added product',
                 addProductData : {
                     date : '',
                     watertype_id: '',
                     quantity : ''
                 }
             })
+            this.notifySuccess()
+        }).catch((error) => {
+            this.setState({
+                toastNotice : 'Error occured during adding of product'
+            })
+            this.notifyError()
         })
     }
     toogleEditProductModal() {
@@ -91,6 +116,7 @@ class Products extends React.Component {
             this._refreshProducts()
             this.setState({
                 editProductModal : !this.state.editProductModal,
+                toastNotice : 'Successfully updated the product',
                 editProductData : {
                     id : '',
                     date: '',
@@ -98,11 +124,26 @@ class Products extends React.Component {
                     quantity : ''
                 }
             })
+            this.notifySuccess()
+        }).catch((error) => {
+            this.setState({
+                toastNotice : 'Error occured during updation of product'
+            })
+            this.notifyError()
         })
     }
     deleteProduct(id) {
         axiosInstance.delete('/products/' + id).then((response) => {
+            this.setState({
+                toastNotice : 'Successfully deleted the product'
+            })
+            this.notifySuccess()
             this._refreshProducts()
+        }).catch((error) => {
+            this.setState({
+                toastNotice : 'Error occured during product deletion'
+            })
+            this.notifyError()
         })
     }
     toogleShowProductModal() {
@@ -130,12 +171,19 @@ class Products extends React.Component {
             })
         })
     }
-    _refreshProducts() {
-        axiosInstance.get('/products').then((response) => {
+    _refreshProducts(pageNumber=1) {
+        axiosInstance.get(`/products?page${pageNumber}`).then((response) => {
             this.setState({
-                products : response.data,
-                loading : false
+                products : response.data.data,
+                current_page : response.data.current_page,
+                total : response.data.total,
+                per_page : response.data.per_page,
+                loading : false,
+                toastNotice : 'Successfully fetched products'
             })
+            this.notifyInfo()
+        }).catch(() => {
+            window.location.reload(true)
         })
     }
     componentDidMount() {
@@ -154,7 +202,7 @@ class Products extends React.Component {
                 <tr key={`products-list-key ${index}`}>
                     <td>{count++}</td>
                     <td>{product.date}</td>
-                    <td>{product.watertype_id}</td>
+                    <td>{product.watertype_name}</td>
                     <td>{product.bottle_quantity}</td>
                     <td>
                         <Button color="success" size="sm" className="mr-2" onClick={this.editProduct.bind(this, product.id, product.date, product.watertype_id, product.quantity)}>Edit</Button>
@@ -287,6 +335,16 @@ class Products extends React.Component {
                                         </tbody>
                                     </Table>
                                 </CardBody>
+                                <Pagination
+                                    activePage={this.state.current_page}
+                                    totalItemsCount={this.state.total}
+                                    itemsCountPerPage={this.state.per_page}
+                                    onChange={(pageNumber) => this._refreshUsers(pageNumber)}
+                                    itemClass="page-item"
+                                    linkClass="page-link"
+                                    firstPageText="First"
+                                    lastPageText="Last"
+                                />
                             </Card>
                         </Col>
                     </Row>

@@ -14,7 +14,10 @@ import {
 import isLoggedIn from "../../helpers/isLoggedIn";
 import {Redirect} from "react-router-dom";
 import Spin from "../../services/Spin";
+import {toast} from "react-toastify";
+import Pagination from "react-js-pagination";
 
+toast.configure()
 class Orders extends React.Component {
     constructor(props) {
         super(props);
@@ -37,14 +40,37 @@ class Orders extends React.Component {
                 watertype_id : '',
                 quantity : ''
             },
-            loading : true
+            loading : true,
+            toastNotice : '',
+            current_page : '',
+            total : '',
+            per_page : '',
         }
     }
-    _refreshOrders() {
-        axiosInstance.get('/orders').then((response) => {
+    notifySuccess() {
+        toast.success(this.state.toastNotice)
+    }
+    notifyInfo() {
+        toast.info(this.state.toastNotice)
+    }
+    notifyWarn() {
+        toast.warn(this.state.toastNotice)
+    }
+    notifyError() {
+        toast.error(this.state.toastNotice)
+    }
+    _refreshOrders(pageNumber) {
+        axiosInstance.get(`/orders?page=${pageNumber}`).then((response) => {
             this.setState({
-                orders : response.data
+                orders : response.data.data,
+                current_page : response.data.current_page,
+                total : response.data.total,
+                per_page : response.data.per_page,
+                toastNotice : 'Successfully fetched orders list'
             })
+            this.notifyInfo()
+        }).catch((error) => {
+            window.location.reload(true)
         })
     }
     toogleNewOrderModal() {
@@ -62,12 +88,19 @@ class Orders extends React.Component {
             this.setState({
                 orders,
                 newOrderModal : !this.state.newOrderModal,
+                toastNotice : 'Successfully added the order',
                 newOrderData : {
                     customer_id : '',
                     watertype_id : '',
                     quantity : ''
                 }
             })
+            this.notifySuccess()
+        }).catch(() => {
+            this.setState({
+                toastNotice : 'Error occured during order addition'
+            })
+            this.notifyError()
         })
     }
     toogleEditOrderModal() {
@@ -83,12 +116,18 @@ class Orders extends React.Component {
             this._refreshOrders()
             this.setState({
                 editOrderModal : !this.state.editOrderModal,
+                toastNotice : 'Successfully updated the order',
                 editOrderData : {
                     id : '',
                     customer_id : '',
                     watertype_id : '',
                     quantity : ''
                 }
+            })
+            this.notifySuccess()
+        }).catch(() => {
+            this.setState({
+                toastNotice : 'Error occured during order updation'
             })
         })
     }
@@ -100,11 +139,19 @@ class Orders extends React.Component {
     }
     deleteOrder(id) {
         axiosInstance.delete('/orders'+ id).then(() => {
+            this.setState({
+                toastNotice : 'Successfully deleted the order'
+            })
+            this.notifySuccess()
             this._refreshOrders()
+        }).catch((error) => {
+            this.setState({
+                toastNotice : 'Error occured dufing product deletion'
+            })
         })
     }
     customers() {
-        axiosInstance.get('/customers').then((response) => {
+        axiosInstance.get('/allCustomers').then((response) => {
             this.setState({
                 customers : response.data
             })
@@ -135,8 +182,8 @@ class Orders extends React.Component {
                 <tr key={`order-list-key ${index}`}>
                     <td>{count++}</td>
                     <td>{order.date_ordered}</td>
-                    <td>{order.customer_id}</td>
-                    <td>{order.watertype_id}</td>
+                    <td>{order.customer_name}</td>
+                    <td>{order.watertype_name}</td>
                     <td>{order.quantity}</td>
                     <td>
                         <Button color="primary" size="sm" className="mr-2"
@@ -208,7 +255,7 @@ class Orders extends React.Component {
                                             <FormGroup>
                                                 <Label for="name">Quantity</Label>
                                                 <Input style={{color: 'black'}} type="number" name="quantity" id="quantity" value={this.state.newOrderData.quantity}
-                                                       placeholder="Quantity in crates"
+                                                       placeholder="Quantity"
                                                        onChange={(e) => {
                                                            let { newOrderData } = this.state;
                                                            newOrderData.quantity = e.target.value
@@ -270,7 +317,7 @@ class Orders extends React.Component {
                                             <FormGroup>
                                                 <Label for="name">Quantity</Label>
                                                 <Input style={{color: 'black'}} type="number" name="quantity" id="quantity" value={this.state.editOrderData.quantity}
-                                                       placeholder="Quantity in crates"
+                                                       placeholder="Quantity"
                                                        onChange={(e) => {
                                                            let { editOrderData } = this.state;
                                                            editOrderData.quantity = e.target.value
@@ -300,6 +347,16 @@ class Orders extends React.Component {
                                         </tbody>
                                     </Table>
                                 </CardBody>
+                                <Pagination
+                                    activePage={this.state.current_page}
+                                    totalItemsCount={this.state.total}
+                                    itemsCountPerPage={this.state.per_page}
+                                    onChange={(pageNumber) => this._refreshOrders(pageNumber)}
+                                    itemClass="page-item"
+                                    linkClass="page-link"
+                                    firstPageText="First"
+                                    lastPageText="Last"
+                                />
                             </Card>
                         </Col>
                     </Row>

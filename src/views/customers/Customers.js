@@ -3,6 +3,9 @@ import axiosInstance from "../../helpers/axios";
 import Spin from "../../services/Spin";
 import isLoggedIn from "../../helpers/isLoggedIn";
 import { Redirect } from 'react-router-dom'
+import Pagination from "react-js-pagination"
+import { toast } from "react-toastify";
+import  'react-toastify/dist/ReactToastify.css'
 
 
 import {
@@ -22,6 +25,8 @@ import {
     Label,
     Input
 } from 'reactstrap'
+
+toast.configure()
 
 class Customers extends React.Component {
     constructor(props) {
@@ -45,8 +50,25 @@ class Customers extends React.Component {
                 phone : '',
                 address : ''
             },
-            loading : true
+            loading : true,
+            toastNotice : '',
+            current_page : '',
+            total : '',
+            per_page : '',
+
         }
+    }
+    notifySuccess() {
+        toast.success(this.state.toastNotice)
+    }
+    notifyInfo() {
+        toast.info(this.state.toastNotice)
+    }
+    notifyWarn() {
+        toast.warn(this.state.toastNotice)
+    }
+    notifyError() {
+        toast.error(this.state.toastNotice)
     }
     toogleNewCustomerModal() {
         this.setState({
@@ -65,12 +87,19 @@ class Customers extends React.Component {
             this.setState({
                 customers,
                 addCustomerModal : !this.state.addCustomerModal,
+                toastNotice : 'Customer added successfully',
                 newCustomerData : {
                     name: '',
                     phone: '',
                     address: ''
                 }
             })
+            this.notifySuccess()
+        }).catch((error) => {
+            this.setState({
+                toastNotice : 'An error has occured during add'
+            })
+            this.notifyError()
         })
     }
     updateCustomer() {
@@ -81,6 +110,7 @@ class Customers extends React.Component {
             this._refreshCustomers()
             this.setState({
                 editCustomerModal : !this.state.editCustomerModal,
+                toastNotice : 'Updated Customer data',
                 editCustomerData : {
                     id: '',
                     name: '',
@@ -88,14 +118,27 @@ class Customers extends React.Component {
                     address: ''
                 }
             })
+            this.notifySuccess()
+        }).catch((error) => {
+            this.setState({
+                toastNotice : 'An error has occured during edit'
+            })
+            this.notifyError()
         })
     }
-    _refreshCustomers() {
-        axiosInstance.get('/customers').then((response) => {
+    _refreshCustomers(pageNumber=1) {
+        axiosInstance.get(`/customers?page=${pageNumber}`).then((response) => {
             this.setState({
-                customers : response.data,
-                loading : false
+                customers : response.data.data,
+                current_page : response.data.current_page,
+                total : response.data.total,
+                per_page : response.data.per_page,
+                loading : false,
+                toastNotice : 'fetched customer data'
             })
+            this.notifyInfo()
+        }).catch((error) => {
+            window.location.reload(true)
         })
     }
     editCustomer(id, name, phone, address) {
@@ -106,7 +149,16 @@ class Customers extends React.Component {
     }
     deleteCustomer(id) {
         axiosInstance.delete('/customers/' + id).then((response) => {
+            this.setState({
+                toastNotice : 'Deleted Customer data'
+            })
+            this.notifySuccess()
             this._refreshCustomers()
+        }).catch(() => {
+            this.setState({
+                toastNotice : 'Error occured during deletion'
+            })
+            this.notifyError()
         })
     }
 
@@ -241,6 +293,16 @@ class Customers extends React.Component {
                                 </tbody>
                             </Table>
                         </CardBody>
+                        <Pagination
+                            activePage={this.state.current_page}
+                            totalItemsCount={this.state.total}
+                            itemsCountPerPage={this.state.per_page}
+                            onChange={(pageNumber) => this._refreshCustomers(pageNumber)}
+                            itemClass="page-item"
+                            linkClass="page-link"
+                            firstPageText="First"
+                            lastPageText="Last"
+                        />
                     </Card>
                 </Col>
             </Row>

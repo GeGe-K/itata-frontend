@@ -14,6 +14,7 @@ import {
 } from "reactstrap";
 import isLoggedIn from "../../helpers/isLoggedIn";
 import Spin from "../../services/Spin";
+import {toast} from "react-toastify";
 
 class WaterTypes extends React.Component {
     constructor(props) {
@@ -32,12 +33,28 @@ class WaterTypes extends React.Component {
             loading: true
         }
     }
+    notifySuccess() {
+        toast.success(this.state.toastNotice)
+    }
+    notifyInfo() {
+        toast.info(this.state.toastNotice)
+    }
+    notifyWarn() {
+        toast.warn(this.state.toastNotice)
+    }
+    notifyError() {
+        toast.error(this.state.toastNotice)
+    }
     _refreshWaterTypes() {
         axiosInstance.get('/watertypes').then((response) => {
             this.setState({
                 waterTypes : response.data,
+                toastNotice : 'Successfully fetched water-type list',
                 loading : false
             })
+            this.notifyInfo()
+        }).catch((error) => {
+            window.location.reload(true)
         })
     }
     toogleNewWaterTypeModal() {
@@ -51,11 +68,18 @@ class WaterTypes extends React.Component {
             waterTypes.push(response.data)
             this.setState({
                 waterTypes,
+                toastNotice : 'Successfully added water-type',
                 addWaterTypeModal : !this.state.addWaterTypeModal,
                 newWaterTypeData : {
                     name: ''
                 }
             })
+            this.notifySuccess()
+        }).catch((error) => {
+            this.setState({
+                toastNotice : 'Error occured during water-type addition'
+            })
+            this.notifyError()
         })
     }
     toogleEditWaterTypeModal() {
@@ -77,15 +101,31 @@ class WaterTypes extends React.Component {
             this._refreshWaterTypes()
             this.setState({
                 editWaterTypeModal : !this.state.editWaterTypeModal,
+                toastNotice : 'Successfully upddated the water-type',
                 editWaterTypeData : {
                     name: ''
                 }
             })
+            this.notifySuccess()
+        }).catch((error) => {
+            this.setState({
+                toastNotice : 'Error occured during water-type updation'
+            })
+            this.notifyError()
         })
     }
     deleteWaterType(id) {
         axiosInstance.delete('/watertypes/'+id).then((response) => {
+            this.setState({
+                toastNotice : 'Successfully deleted the water-type'
+            })
+            this.notifySuccess()
             this._refreshWaterTypes()
+        }).catch(() => {
+            this.setState({
+                toastNotice : 'Error occured during deletion'
+            })
+            this.notifyError()
         })
     }
 

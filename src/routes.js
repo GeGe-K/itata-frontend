@@ -20,6 +20,8 @@ import Customers from "./views/Customers/Customers";
 import Orders from "./views/Orders/Orders"
 import WaterTypes from "./views/WaterTypes/WaterTypes";
 import Products from "./views/Products/Products";
+import UserProfile from "./views/Users/UserProfile";
+import User from "./views/Users/Users";
 
 let routes = [
   {
@@ -57,25 +59,26 @@ let routes = [
     component: WaterTypes,
     layout: "/admin"
   },
-  // {
-  //   path: "/icons",
-  //   name: "Icons",
-  //   icon: "tim-icons icon-atom",
-  //   component: Icons,
-  //   layout: "/admin"
-  // },
+  {
+    path: "/users",
+    name: "Users",
+    icon: "tim-icons icon-atom",
+    component: User,
+    layout: "/admin"
+  },
+  {
+  path: "/user-profile",
+    name: "User Profile",
+    icon: "tim-icons icon-single-02",
+    component: UserProfile,
+    layout: "/admin"
+  },
+
   // {
   //   path: "/notifications",
   //   name: "Notifications",
   //   icon: "tim-icons icon-bell-55",
   //   component: Notifications,
-  //   layout: "/admin"
-  // },
-  // {
-  //   path: "/user-profile",
-  //   name: "User Profile",
-  //   icon: "tim-icons icon-single-02",
-  //   component: UserProfile,
   //   layout: "/admin"
   // },
   // {
