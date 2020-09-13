@@ -196,7 +196,7 @@ class User extends React.Component {
                     <td>
                         <Button color="success" size="sm" className="mr-2" onClick={this.editUser.bind(this, user.id, user.name,
                             user.email, user.phone,
-                            user.address)}>Edit</Button>
+                            user.address, user.password)}>Edit</Button>
                         <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, user.id)}>Delete</Button>
                     </td>
                 </tr>
