@@ -1,9 +1,9 @@
 import React from 'react'
-import {Button, Card, CardBody, CardFooter, CardText, Col, Row} from "reactstrap";
+import { Card, CardBody, CardFooter, CardText, Col, Row} from "reactstrap";
 
 function UserCard (props) {
     return(
-        <Col md="5">
+        <Col md="7">
             <Card className="card-user">
                 <CardBody>
                     <CardText />
@@ -16,7 +16,7 @@ function UserCard (props) {
                             <img
                                 alt="..."
                                 className="avatar"
-                                src={require("assets/img/emilyz.jpg")}
+                                src={require("assets/img/ts.png")}
                             />
                         </a>
                     </div>
@@ -57,17 +57,7 @@ function UserCard (props) {
                     </div>
                 </CardBody>
                 <CardFooter>
-                    <div className="button-container">
-                        <Button className="btn-icon btn-round" color="facebook">
-                            <i className="fab fa-facebook" />
-                        </Button>
-                        <Button className="btn-icon btn-round" color="twitter">
-                            <i className="fab fa-twitter" />
-                        </Button>
-                        <Button className="btn-icon btn-round" color="google">
-                            <i className="fab fa-google-plus" />
-                        </Button>
-                    </div>
+
                 </CardFooter>
             </Card>
         </Col>
